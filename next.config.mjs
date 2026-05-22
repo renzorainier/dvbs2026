@@ -9,6 +9,6 @@ const withSerwist = withSerwistInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  turbopack: {}, // Tells Next.js: "I know what I'm doing, ignore the Webpack mismatch"
 };
+
 export default withSerwist(nextConfig);
