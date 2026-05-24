@@ -29,10 +29,10 @@ function Visitors({ config, currentConfigIndex, setCurrentConfigIndex, isVisitor
   const predefinedRoutes = [
     "Antipolo Hills", "Banaba", "Brgy. San Luis", "Cottonwoods", "Crestwood",
     "Dambakan", "Famous", "Fatima", "Forrestridge", "Insular", "Kaysipot",
-    "LaSalle", "Mira Verde", "Monte Oro", "Oreta", "Pagray", "Patnubay",
-    "Pinugay Baras", "Primrose", "Queenstown 1", "Queenstown 2", "Radar",
+    "LaSalle", "Mira Verde", "Monte Oro", "Oreta", "Pagray", "Patnubay", 
+    "Pinugay Baras", "Primrose", "Queenstown 1", "Queenstown 2", "Radar", "Rellocation",
     "Samba Homes", "Sampaga", "San Isidro", "Santana", "Sarimanok", "Solid",
-    "Sta. Elena", "TakTak Road", "Town and Country", "Tropical Palms"
+    "Sta. Elena", "TakTak Road", "Town and Country", "Tropical Palms", 
   ];
 
   const fetchPrimary = async () => {

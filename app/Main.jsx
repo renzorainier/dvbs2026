@@ -19,25 +19,29 @@ import Weather from "./Weather";
 // Uniform Outlined Icons
 import { FaChevronDown } from "react-icons/fa";
 import { MdOutlineLocalGroceryStore } from "react-icons/md";
-import { FiClock, FiMonitor, FiAward } from "react-icons/fi";
+import { FiClock, FiMonitor, FiAward, FiStar } from "react-icons/fi";
 import {
   HiOutlineUserGroup,
   HiOutlineClipboardList,
   HiOutlineTrendingUp,
+  HiOutlineUser,
 } from "react-icons/hi";
 import { TbDoorExit, TbCross } from "react-icons/tb";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import { IoAddCircleOutline } from "react-icons/io5";
 
 function Main() {
   const [currentComponent, setCurrentComponent] = useState(null);
   const [isVisitorView, setIsVisitorView] = useState(false);
   const [cardExpanded, setCardExpanded] = useState(false);
+  
+  // New state to control the points overlay modal
+  const [showPointsOverlay, setShowPointsOverlay] = useState(false);
 
   const toggleCard = () => setCardExpanded(!cardExpanded);
 
   const handleButtonClick = (componentName) => {
     setCurrentComponent(componentName);
+    setShowPointsOverlay(false); // Ensure overlay closes when navigating
   };
 
   const handleBackButtonClick = () => {
@@ -106,163 +110,204 @@ function Main() {
         );
       default:
         return (
-          // Changed to min-h-[100dvh] and added py-8 so it never hits the absolute edges on small screens
           <div
-            className="flex flex-col justify-center items-center min-h-[100dvh] relative overflow-y-auto overflow-x-hidden py-8"
+            className="flex flex-col justify-center items-center min-h-[100dvh] relative overflow-y-auto overflow-x-hidden py-12"
             style={{
-              background:
-                "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0.05))",
+              background: "linear-gradient(to top, rgba(0,0,0,0.6), transparent)",
             }}>
-            {/* Header Area */}
-            <div className="flex-shrink-0 w-full flex flex-col items-center z-10 mb-2">
-              <div className="text-white text-center relative z-10">
-                <h1 className="font-bold text-7xl sm:text-8xl md:text-9xl lg:text-9xl">
-                  {/* Note: changed text-white-400 to text-white as 400 is not a valid tailwind white shade */}
-                  <span className="text-white font-bold">POLAR EXTREMES</span>
+            
+            {/* === PREMIUM HEADER AREA === */}
+            <div className="flex-shrink-0 w-full flex flex-col items-center z-10 mb-12 mt-4">
+              <div className="text-center relative z-10 flex flex-col items-center select-none">
+                <h1 className="font-black text-7xl min-[360px]:text-8xl sm:text-9xl lg:text-[10rem] tracking-tighter leading-none bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(255,255,255,0.3)] pb-2 [-webkit-text-stroke:1px_white]">
+                  POLAR
                 </h1>
-                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-                  D V B S &nbsp;2 0 2 6
-                </h3>
+                <h2 className="font-light text-3xl min-[360px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.4em] leading-none text-white/90 uppercase mt-2 drop-shadow-sm">
+                  Extremes
+                </h2>
+                
+                <div className="flex items-center justify-center gap-6 mt-8 w-full max-w-md opacity-80">
+                  <div className="h-[1px] w-16 sm:w-24 bg-gradient-to-r from-transparent to-white/60"></div>
+                  <h3 className="font-medium text-xs sm:text-sm md:text-base tracking-[0.5em] text-white uppercase whitespace-nowrap">
+                    DVBS 2026
+                  </h3>
+                  <div className="h-[1px] w-16 sm:w-24 bg-gradient-to-l from-transparent to-white/60"></div>
+                </div>
               </div>
             </div>
+            {/* ======================================= */}
 
-            {/* <div className="flex-shrink-0 container mx-auto mb-4 z-10 scale-90 origin-top border border-white/10 rounded-xl overflow-hidden">
-              <Weather />
-            </div> */}
-            {/* Grid Area - REMOVED flex-1 so it stops pushing the header to the top */}
-            <div className="w-full px-16 max-w-[360px] mx-auto z-10 flex flex-col justify-center min-h-0">
-              <div className="grid grid-cols-2 gap-3">
+            {/* Grid Area - Premium Glass */}
+            <div className="w-full px-20 sm:px-16 max-w-[420px] mx-auto z-10 flex flex-col justify-center min-h-0">
+              <div className="grid grid-cols-2 gap-4">
+                
                 <button
-                  className="focus:outline-none bg-white/5 backdrop-blur-lg border border-white/10 opacity-60 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:opacity-100 flex flex-col items-center justify-center w-full aspect-square p-2"
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
                   onClick={() => handleButtonClick("Tab")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
+                  style={{ animation: "slide-from-left 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
                   <HiOutlineClipboardList
-                    style={{ fontSize: "3.5em" }}
-                    className="mb-2"
+                    style={{ fontSize: "2.8rem" }}
+                    className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md"
                   />
-                  <span className="text-base">Attendance</span>
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Attendance</span>
                 </button>
 
                 <button
-                  className="focus:outline-none bg-white/5 backdrop-blur-lg border border-white/10 opacity-60 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:opacity-100 flex flex-col items-center justify-center w-full aspect-square p-2"
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
                   onClick={() => handleButtonClick("Attendance")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
+                  style={{ animation: "slide-from-left 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
                   <HiOutlineTrendingUp
-                    style={{ fontSize: "3.5em" }}
-                    className="mb-2"
+                    style={{ fontSize: "2.8rem" }}
+                    className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md"
                   />
-                  <span className="text-base">List</span>
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">List</span>
                 </button>
 
                 <button
-                  className="focus:outline-none bg-yellow-400/10 backdrop-blur-lg border border-yellow-400/50 shadow-[0_4px_15px_rgba(250,204,21,0.15)] text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:bg-yellow-400/20 hover:border-yellow-400 flex flex-col items-center justify-center w-full aspect-square p-2"
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
                   onClick={() => handleButtonClick("Schedule")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
+                  style={{ animation: "slide-from-left 1.0s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
                   <FiClock
-                    style={{ fontSize: "3.5em" }}
-                    className="mb-2 text-yellow-300"
+                    style={{ fontSize: "2.8rem" }}
+                    className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md"
                   />
-                  <span className="text-base">Schedule</span>
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Schedule</span>
+                </button>
+
+                {/* UPDATED: Main Points button with FiStar icon */}
+                <button
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
+                  onClick={() => setShowPointsOverlay(true)}
+                  style={{ animation: "slide-from-left 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
+                  <FiStar
+                    style={{ fontSize: "2.8rem" }}
+                    className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md"
+                  />
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Points</span>
                 </button>
 
                 <button
-                  className="focus:outline-none bg-white/5 backdrop-blur-lg border border-white/10 opacity-60 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:opacity-100 flex flex-col items-center justify-center w-full aspect-square p-2"
-                  onClick={() => handleButtonClick("Point")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
-                  <HiOutlineUserGroup
-                    style={{ fontSize: "3.5em" }}
-                    className="mb-2"
-                  />
-                  <span className="text-base">Group Points</span>
-                </button>
-
-                <button
-                  className="focus:outline-none bg-yellow-400/10 backdrop-blur-lg border border-yellow-400/50 shadow-[0_4px_15px_rgba(250,204,21,0.15)] text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:bg-yellow-400/20 hover:border-yellow-400 flex flex-col items-center justify-center w-full aspect-square p-2"
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
                   onClick={() => handleButtonClick("Rewards")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
+                  style={{ animation: "slide-from-left 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
                   <FiAward
-                    style={{ fontSize: "3.5em" }}
-                    className="mb-2 text-yellow-300"
+                    style={{ fontSize: "2.8rem" }}
+                    className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md"
                   />
-                  <span className="text-base">Rewards</span>
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Rewards</span>
                 </button>
 
                 <button
-                  className="focus:outline-none bg-yellow-400/10 backdrop-blur-lg border border-yellow-400/50 shadow-[0_4px_15px_rgba(250,204,21,0.15)] text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:bg-yellow-400/20 hover:border-yellow-400 flex flex-col items-center justify-center w-full aspect-square p-2"
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
                   onClick={() => handleButtonClick("SalvationDecision")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
+                  style={{ animation: "slide-from-left 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
                   <TbCross
-                    style={{ fontSize: "3.5em" }}
-                    className="mb-2 text-yellow-300"
+                    style={{ fontSize: "2.8rem" }}
+                    className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md"
                   />
-                  <span className="text-base">Salvation</span>
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Salvation</span>
                 </button>
 
                 <button
-                  className="focus:outline-none bg-white/5 backdrop-blur-lg border border-white/10 opacity-60 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:opacity-100 flex flex-col items-center justify-center w-full aspect-square p-2"
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
                   onClick={() => handleButtonClick("Store")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
+                  style={{ animation: "slide-from-left 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
                   <MdOutlineLocalGroceryStore
-                    style={{ fontSize: "3.5em" }}
-                    className="mb-2"
+                    style={{ fontSize: "2.8rem" }}
+                    className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md"
                   />
-                  <span className="text-base">Store</span>
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Store</span>
                 </button>
 
                 <button
-                  className="focus:outline-none bg-white/5 backdrop-blur-lg border border-white/10 opacity-60 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:opacity-100 flex flex-col items-center justify-center w-full aspect-square p-2"
+                  className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white hover:shadow-[0_8px_32px_rgba(255,255,255,0.05)] flex flex-col items-center justify-center w-full aspect-square p-4"
                   onClick={() => handleButtonClick("Out")}
-                  style={{ animation: "slide-from-left 1s ease forwards" }}>
-                  <TbDoorExit style={{ fontSize: "3.5em" }} className="mb-2" />
-                  <span className="text-base">Out</span>
+                  style={{ animation: "slide-from-left 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
+                  <TbDoorExit style={{ fontSize: "2.8rem" }} className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md" />
+                  <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Out</span>
                 </button>
               </div>
 
-              {/* Dropdown Toggle */}
-              <div className="flex justify-center items-center mt-3">
-                <div className="px-4 py-1 cursor-pointer" onClick={toggleCard}>
+              {/* Minimalist Pill Dropdown Toggle */}
+              <div className="flex justify-center items-center mt-8">
+                <button 
+                  className="flex justify-center items-center w-16 h-8 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-xl border border-white/10 shadow-lg transition-all duration-500 ease-out focus:outline-none group" 
+                  onClick={toggleCard}
+                  aria-label="Toggle Menu"
+                >
                   <FaChevronDown
-                    className={`text-white text-2xl transition-transform duration-300 ${
-                      cardExpanded ? "rotate-180 mb-1" : ""
+                    className={`text-white/60 group-hover:text-white text-sm transition-transform duration-500 ${
+                      cardExpanded ? "rotate-180" : ""
                     }`}
                   />
-                </div>
+                </button>
               </div>
 
-              {/* Expanded Menu Items */}
-              {cardExpanded && (
-                <div className="grid grid-cols-2 gap-3 mt-1">
+              {/* Expanded Menu Items - Centered Monitor Button */}
+              <div 
+                className={`flex justify-center transition-all duration-700 ease-in-out overflow-hidden ${
+                  cardExpanded ? "max-h-[300px] mt-4 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
                   <button
-                    className="focus:outline-none bg-white/5 backdrop-blur-lg border border-white/10 opacity-60 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:opacity-100 flex flex-col items-center justify-center w-full aspect-square p-2"
-                    onClick={() => handleButtonClick("DisplayControl")}
-                    style={{ animation: "slide-from-left 1s ease forwards" }}>
-                    <FiMonitor style={{ fontSize: "3.5em" }} className="mb-2" />
-                    <span className="text-base">Monitor</span>
+                    className="group focus:outline-none bg-white/5 backdrop-blur-xl border border-white/10 text-white/70 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-all duration-500 ease-out transform hover:-translate-y-1 hover:bg-white/10 hover:border-white/20 hover:text-white flex flex-col items-center justify-center w-[calc(50%-0.5rem)] aspect-square p-4"
+                    onClick={() => handleButtonClick("DisplayControl")}>
+                    <FiMonitor style={{ fontSize: "2.8rem" }} className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md" />
+                    <span className="text-xs font-semibold tracking-widest uppercase opacity-90">Monitor</span>
                   </button>
+              </div>
+            </div>
+
+            {/* === PREMIUM POINTS OVERLAY MODAL === */}
+            {showPointsOverlay && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-black/60 backdrop-blur-md transition-opacity duration-500">
+                <div 
+                  className="w-full max-w-[340px] bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2rem] p-6 shadow-[0_8px_32px_rgba(0,0,0,0.5)] flex flex-col gap-6"
+                  style={{ animation: "slide-from-left 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
+                >
+                  <div className="text-center space-y-2 mt-2">
+                    <h3 className="text-white font-light tracking-[0.3em] uppercase text-sm">Select Points</h3>
+                    <div className="h-[1px] w-12 mx-auto bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      className="group focus:outline-none bg-white/5 border border-white/10 text-white/70 rounded-2xl transition-all duration-500 ease-out hover:bg-white/15 hover:border-white/30 hover:text-white p-4 flex flex-col items-center justify-center aspect-square shadow-lg hover:shadow-xl hover:-translate-y-1"
+                      onClick={() => handleButtonClick("Point")}>
+                      <HiOutlineUserGroup style={{ fontSize: "2.5rem" }} className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md" />
+                      <span className="text-[10px] font-semibold tracking-widest uppercase opacity-90 text-center">Group</span>
+                    </button>
+                    
+                    {/* UPDATED: Individual Points button with HiOutlineUser icon */}
+                    <button
+                      className="group focus:outline-none bg-white/5 border border-white/10 text-white/70 rounded-2xl transition-all duration-500 ease-out hover:bg-white/15 hover:border-white/30 hover:text-white p-4 flex flex-col items-center justify-center aspect-square shadow-lg hover:shadow-xl hover:-translate-y-1"
+                      onClick={() => handleButtonClick("RecitationPoints")}>
+                      <HiOutlineUser style={{ fontSize: "2.5rem" }} className="mb-3 transition-transform duration-500 group-hover:scale-110 drop-shadow-md" />
+                      <span className="text-[10px] font-semibold tracking-widest uppercase opacity-90 text-center">Individual</span>
+                    </button>
+                  </div>
+
                   <button
-                    className="focus:outline-none bg-white/5 backdrop-blur-lg border border-white/10 opacity-60 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:opacity-100 flex flex-col items-center justify-center w-full aspect-square p-2"
-                    onClick={() => handleButtonClick("RecitationPoints")}
-                    style={{ animation: "slide-from-left 1s ease forwards" }}>
-                    <IoAddCircleOutline
-                      style={{ fontSize: "3.5em" }}
-                      className="mb-2"
-                    />
-                    <span className="text-base">Recitation</span>
+                    className="w-full py-4 mt-2 rounded-full bg-white/5 border border-white/10 text-white/50 tracking-[0.3em] text-[10px] uppercase hover:bg-white/10 hover:text-white transition-all duration-500 focus:outline-none"
+                    onClick={() => setShowPointsOverlay(false)}>
+                    Cancel
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+            {/* ==================================== */}
+            
           </div>
         );
     }
   };
 
   const backButton = currentComponent ? (
-    <div className="fixed bottom-6 left-6 z-50">
+    <div className="fixed bottom-8 left-8 z-50">
       <button
-        className="bg-gray-700/80 backdrop-blur-md border border-white/20 text-white font-bold p-3 rounded-full shadow-xl transition-all duration-300 ease-in-out transform hover:scale-110 focus:outline-none"
+        className="flex items-center justify-center w-12 h-12 bg-black/20 backdrop-blur-xl border border-white/10 text-white/80 rounded-full shadow-2xl transition-all duration-500 ease-out hover:bg-white/10 hover:border-white/30 hover:text-white hover:scale-110 focus:outline-none"
         onClick={handleBackButtonClick}>
-        <IoMdArrowRoundBack className="text-2xl" />
+        <IoMdArrowRoundBack className="text-xl" />
       </button>
     </div>
   ) : null;

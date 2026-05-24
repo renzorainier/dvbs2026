@@ -1,149 +1,121 @@
 // AuroraBackground.jsx
-// Drop-in background component — place as the first child in a relative container.
-// Uses only Tailwind utility classes + inline keyframe injection for the aurora animations.
-
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 const AURORA_KEYFRAMES = `
 @keyframes aurora-drift-1 {
-  0%   { transform: translateY(0%)   scaleX(1)    rotate(-3deg); opacity: 0.75; }
-  30%  { transform: translateY(-6%)  scaleX(1.05) rotate(-1deg); opacity: 0.9; }
-  60%  { transform: translateY(-12%) scaleX(0.97) rotate(-5deg); opacity: 0.7; }
-  100% { transform: translateY(0%)   scaleX(1)    rotate(-3deg); opacity: 0.75; }
+  0%   { transform: translateY(0%)   scaleX(1)    rotate(-3deg) translateZ(0); opacity: 0.75; }
+  30%  { transform: translateY(-6%)  scaleX(1.05) rotate(-1deg) translateZ(0); opacity: 0.9; }
+  60%  { transform: translateY(-12%) scaleX(0.97) rotate(-5deg) translateZ(0); opacity: 0.7; }
+  100% { transform: translateY(0%)   scaleX(1)    rotate(-3deg) translateZ(0); opacity: 0.75; }
 }
 @keyframes aurora-drift-2 {
-  0%   { transform: translateY(0%)  scaleX(1)    rotate(2deg);  opacity: 0.65; }
-  40%  { transform: translateY(8%)  scaleX(1.08) rotate(4deg);  opacity: 0.85; }
-  70%  { transform: translateY(3%)  scaleX(0.95) rotate(1deg);  opacity: 0.6; }
-  100% { transform: translateY(0%)  scaleX(1)    rotate(2deg);  opacity: 0.65; }
+  0%   { transform: translateY(0%)  scaleX(1)    rotate(2deg) translateZ(0);  opacity: 0.65; }
+  40%  { transform: translateY(8%)  scaleX(1.08) rotate(4deg) translateZ(0);  opacity: 0.85; }
+  70%  { transform: translateY(3%)  scaleX(0.95) rotate(1deg) translateZ(0);  opacity: 0.6; }
+  100% { transform: translateY(0%)  scaleX(1)    rotate(2deg) translateZ(0);  opacity: 0.65; }
 }
 @keyframes aurora-drift-3 {
-  0%   { transform: translateY(0%)   scaleX(1)    rotate(-6deg); opacity: 0.8; }
-  50%  { transform: translateY(-10%) scaleX(1.1)  rotate(-2deg); opacity: 0.95; }
-  100% { transform: translateY(0%)   scaleX(1)    rotate(-6deg); opacity: 0.8; }
+  0%   { transform: translateY(0%)   scaleX(1)    rotate(-6deg) translateZ(0); opacity: 0.8; }
+  50%  { transform: translateY(-10%) scaleX(1.1)  rotate(-2deg) translateZ(0); opacity: 0.95; }
+  100% { transform: translateY(0%)   scaleX(1)    rotate(-6deg) translateZ(0); opacity: 0.8; }
 }
 @keyframes aurora-drift-4 {
-  0%   { transform: translateY(0%)  scaleX(1)    rotate(5deg);  opacity: 0.55; }
-  35%  { transform: translateY(6%)  scaleX(1.06) rotate(8deg);  opacity: 0.75; }
-  65%  { transform: translateY(-4%) scaleX(0.98) rotate(3deg);  opacity: 0.5; }
-  100% { transform: translateY(0%)  scaleX(1)    rotate(5deg);  opacity: 0.55; }
+  0%   { transform: translateY(0%)  scaleX(1)    rotate(5deg) translateZ(0);  opacity: 0.55; }
+  35%  { transform: translateY(6%)  scaleX(1.06) rotate(8deg) translateZ(0);  opacity: 0.75; }
+  65%  { transform: translateY(-4%) scaleX(0.98) rotate(3deg) translateZ(0);  opacity: 0.5; }
+  100% { transform: translateY(0%)  scaleX(1)    rotate(5deg) translateZ(0);  opacity: 0.55; }
 }
 @keyframes aurora-drift-5 {
-  0%   { transform: translateY(0%)  scaleX(1)    rotate(-1deg); opacity: 0.7; }
-  45%  { transform: translateY(-8%) scaleX(1.04) rotate(1deg);  opacity: 0.88; }
-  100% { transform: translateY(0%)  scaleX(1)    rotate(-1deg); opacity: 0.7; }
+  0%   { transform: translateY(0%)  scaleX(1)    rotate(-1deg) translateZ(0); opacity: 0.7; }
+  45%  { transform: translateY(-8%) scaleX(1.04) rotate(1deg) translateZ(0);  opacity: 0.88; }
+  100% { transform: translateY(0%)  scaleX(1)    rotate(-1deg) translateZ(0); opacity: 0.7; }
 }
-@keyframes twinkle {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50%       { opacity: 1;   transform: scale(1.4); }
+@keyframes star-pulse-1 {
+  0%, 100% { opacity: 0.6; } 50% { opacity: 1; }
+}
+@keyframes star-pulse-2 {
+  0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; }
+}
+@keyframes star-pulse-3 {
+  0%, 100% { opacity: 0.8; } 50% { opacity: 0.4; }
 }
 `;
-
-// Each ribbon: position (left%), width, height, color stop config, animation
 const ribbons = [
+  // Primary teal-green ribbon
+  { 
+    id: 1, left: "5%", width: "45%", height: "115%", top: "-15%", 
+    gradient: "linear-gradient(168deg, transparent 0%, rgba(0, 230, 118, 0.5) 25%, rgba(0, 191, 165, 0.7) 50%, transparent 80%)", 
+    animation: "aurora-drift-1 14s ease-in-out infinite", 
+    blur: "28px", opacity: 0.85 
+  },
+  // Bright cyan/white central beam
+  { 
+    id: 2, left: "35%", width: "30%", height: "120%", top: "-20%", 
+    gradient: "linear-gradient(180deg, transparent 0%, rgba(178, 235, 242, 0.6) 25%, rgba(0, 229, 255, 0.7) 50%, transparent 85%)", 
+    animation: "aurora-drift-3 10s ease-in-out infinite", 
+    blur: "24px", opacity: 0.8 
+  },
+  // Second teal-green sweep
+  { 
+    id: 3, left: "42%", width: "45%", height: "110%", top: "-10%", 
+    gradient: "linear-gradient(172deg, transparent 0%, rgba(29, 233, 182, 0.5) 25%, rgba(0, 188, 212, 0.7) 50%, transparent 80%)", 
+    animation: "aurora-drift-2 17s ease-in-out infinite", 
+    blur: "32px", opacity: 0.85 
+  },
+  // Lavender/violet ribbon (left edge)
+  { 
+    id: 4, left: "-5%", width: "45%", height: "108%", top: "-8%",  
+    gradient: "linear-gradient(162deg, transparent 0%, rgba(225, 190, 231, 0.4) 25%, rgba(156, 39, 176, 0.6) 50%, transparent 85%)", 
+    animation: "aurora-drift-4 20s ease-in-out infinite", 
+    blur: "35px", opacity: 0.6 
+  },
+  // Soft lavender right wing
+  { 
+    id: 5, left: "60%", width: "45%", height: "105%", top: "-5%",  
+    gradient: "linear-gradient(175deg, transparent 0%, rgba(209, 196, 233, 0.4) 25%, rgba(124, 77, 255, 0.6) 50%, transparent 85%)", 
+    animation: "aurora-drift-5 15s ease-in-out infinite", 
+    blur: "30px", opacity: 0.6  
+  },
+];
+const snowHills = [
   {
     id: 1,
-    left: "-8%",
-    width: "45%",
-    height: "110%",
-    top: "-10%",
-    gradient: "linear-gradient(170deg, transparent 0%, #0af5c4 18%, #00c896 38%, #7b2fff 62%, transparent 80%)",
-    animation: "aurora-drift-1 14s ease-in-out infinite",
-    blur: "18px",
-    opacity: 0.82,
+    left: "-25%", right: "auto", bottom: "-25%",
+    width: "90%", height: "45%",
+    background: "linear-gradient(180deg, #b3e5fc 0%, #1565c0 70%, #0d2b6e 100%)",
+    boxShadow: "inset 0 22px 22px -14px rgba(230, 248, 255, 0.85)",
+    zIndex: 10,
   },
   {
     id: 2,
-    left: "10%",
-    width: "38%",
-    height: "105%",
-    top: "-5%",
-    gradient: "linear-gradient(160deg, transparent 0%, #a855f7 15%, #7c3aed 35%, #06b6d4 60%, transparent 78%)",
-    animation: "aurora-drift-2 18s ease-in-out infinite",
-    blur: "22px",
-    opacity: 0.7,
+    left: "auto", right: "-20%", bottom: "-20%",
+    width: "80%", height: "40%",
+    background: "linear-gradient(180deg, #e0f7fa 0%, #1976d2 65%, #0a237a 100%)",
+    boxShadow: "inset 0 20px 20px -14px rgba(255, 255, 255, 0.75)",
+    zIndex: 11,
   },
   {
     id: 3,
-    left: "28%",
-    width: "42%",
-    height: "115%",
-    top: "-15%",
-    gradient: "linear-gradient(175deg, transparent 0%, #10ffb0 12%, #00e5a0 32%, #0ea5e9 55%, transparent 75%)",
-    animation: "aurora-drift-3 12s ease-in-out infinite",
-    blur: "15px",
-    opacity: 0.88,
-  },
-  {
-    id: 4,
-    left: "48%",
-    width: "36%",
-    height: "108%",
-    top: "-8%",
-    gradient: "linear-gradient(165deg, transparent 0%, #c084fc 20%, #818cf8 42%, #22d3ee 65%, transparent 82%)",
-    animation: "aurora-drift-4 20s ease-in-out infinite",
-    blur: "20px",
-    opacity: 0.65,
-  },
-  {
-    id: 5,
-    left: "62%",
-    width: "48%",
-    height: "112%",
-    top: "-12%",
-    gradient: "linear-gradient(172deg, transparent 0%, #34d399 15%, #06b6d4 38%, #8b5cf6 62%, transparent 80%)",
-    animation: "aurora-drift-5 16s ease-in-out infinite",
-    blur: "18px",
-    opacity: 0.78,
-  },
-  // Extra ambient glow ribbons for depth
-  {
-    id: 6,
-    left: "-5%",
-    width: "30%",
-    height: "90%",
-    top: "10%",
-    gradient: "linear-gradient(168deg, transparent 0%, #6ee7b7 22%, transparent 60%)",
-    animation: "aurora-drift-2 22s ease-in-out infinite reverse",
-    blur: "30px",
-    opacity: 0.45,
-  },
-  {
-    id: 7,
-    left: "55%",
-    width: "50%",
-    height: "95%",
-    top: "5%",
-    gradient: "linear-gradient(175deg, transparent 0%, #e879f9 20%, #818cf8 50%, transparent 70%)",
-    animation: "aurora-drift-1 25s ease-in-out infinite reverse",
-    blur: "35px",
-    opacity: 0.38,
+    left: "-10%", right: "-10%", bottom: "-15%",
+    width: "120%", height: "30%",
+    background: "linear-gradient(180deg, #f0f9ff 0%, #bbdefb 30%, #1e40af 100%)",
+    boxShadow: "inset 0 28px 28px -14px rgba(255, 255, 255, 1)",
+    zIndex: 12,
   },
 ];
 
-// Scattered star positions (deterministic so no hydration mismatch)
-const stars = [
-  { x: 8, y: 5, size: 3, delay: "0s", dur: "3s" },
-  { x: 22, y: 12, size: 2, delay: "1.2s", dur: "4s" },
-  { x: 38, y: 4, size: 2.5, delay: "0.5s", dur: "3.5s" },
-  { x: 55, y: 8, size: 2, delay: "2s", dur: "5s" },
-  { x: 71, y: 3, size: 3, delay: "0.8s", dur: "3s" },
-  { x: 84, y: 11, size: 2, delay: "1.5s", dur: "4.5s" },
-  { x: 93, y: 6, size: 2.5, delay: "0.3s", dur: "3.8s" },
-  { x: 14, y: 22, size: 2, delay: "2.5s", dur: "4s" },
-  { x: 46, y: 18, size: 3, delay: "1s", dur: "3.2s" },
-  { x: 67, y: 24, size: 2, delay: "1.8s", dur: "5s" },
-  { x: 79, y: 17, size: 2.5, delay: "0.6s", dur: "3.6s" },
-  { x: 31, y: 28, size: 2, delay: "3s", dur: "4.2s" },
-  { x: 88, y: 29, size: 3, delay: "0.2s", dur: "3s" },
-  { x: 5, y: 38, size: 2, delay: "1.4s", dur: "4.8s" },
-  { x: 60, y: 35, size: 2, delay: "2.2s", dur: "3.4s" },
-  { x: 43, y: 42, size: 2.5, delay: "0.9s", dur: "5.2s" },
-  { x: 19, y: 48, size: 2, delay: "1.7s", dur: "3.9s" },
-  { x: 76, y: 44, size: 3, delay: "0.4s", dur: "3.3s" },
-  { x: 97, y: 40, size: 2, delay: "2.8s", dur: "4.6s" },
-  { x: 52, y: 55, size: 2, delay: "1.1s", dur: "4.1s" },
-];
+const createRandom = (seed) => () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+const generateStarField = (count, size, seed) => {
+  const random = createRandom(seed);
+  let shadows = [];
+  for (let i = 0; i < count; i++) {
+    const x = Math.floor(random() * 100);
+    const y = Math.floor(random() * 70);
+    shadows.push(`${x}vw ${y}vh #ffffff`);
+  }
+  return shadows.join(", ");
+};
 
 const AuroraBackground = () => {
   useEffect(() => {
@@ -158,6 +130,12 @@ const AuroraBackground = () => {
     };
   }, []);
 
+  const starLayers = useMemo(() => [
+    { size: 1, shadow: generateStarField(120, 1, 123), animation: "star-pulse-1 4s infinite" },
+    { size: 2, shadow: generateStarField(60,  2, 456), animation: "star-pulse-2 5s infinite" },
+    { size: 3, shadow: generateStarField(20,  3, 789), animation: "star-pulse-3 6s infinite" }
+  ], []);
+
   return (
     <div
       aria-hidden="true"
@@ -165,81 +143,47 @@ const AuroraBackground = () => {
         position: "absolute",
         inset: 0,
         overflow: "hidden",
-        // Deep midnight-blue base matching the reference image
-        background:
-          "radial-gradient(ellipse 120% 80% at 50% 60%, #0a1f4a 0%, #071535 40%, #040d22 100%)",
+        // UPDATED: Stacked backgrounds for a coherent sky transition without harsh ovals
+        background: `
+          radial-gradient(circle at 50% 100%, rgba(248, 187, 208, 0.4) 0%, transparent 50%),
+          linear-gradient(180deg, #090b14 0%, #1a237e 45%, #7986cb 80%, #ce93d8 100%)
+        `,
         zIndex: 0,
       }}
     >
-      {/* Stars */}
-      {stars.map((s, i) => (
+      {starLayers.map((layer, i) => (
         <div
-          key={i}
+          key={`star-layer-${i}`}
           style={{
             position: "absolute",
-            left: `${s.x}%`,
-            top: `${s.y}%`,
-            width: `${s.size}px`,
-            height: `${s.size}px`,
+            width: `${layer.size}px`,
+            height: `${layer.size}px`,
             borderRadius: "50%",
-            background: "#e0f0ff",
-            animation: `twinkle ${s.dur} ${s.delay} ease-in-out infinite`,
-            boxShadow: "0 0 4px 1px rgba(180,220,255,0.7)",
+            background: "transparent",
+            boxShadow: layer.shadow,
+            animation: layer.animation,
+            willChange: "opacity"
           }}
         />
       ))}
 
-      {/* Cross-star sparkles (4-pointed) */}
-      {[
-        { x: 6, y: 9 },
-        { x: 37, y: 6 },
-        { x: 53, y: 15 },
-        { x: 70, y: 5 },
-        { x: 82, y: 19 },
-        { x: 25, y: 32 },
-        { x: 90, y: 7 },
-      ].map((s, i) => (
+      {[{ x: 16, y: 19 }, { x: 37, y: 6 }, { x: 70, y: 15 }, { x: 82, y: 39 }].map((s, i) => (
         <div
           key={`spark-${i}`}
           style={{
             position: "absolute",
             left: `${s.x}%`,
             top: `${s.y}%`,
-            width: "10px",
-            height: "10px",
-            animation: `twinkle ${3 + (i % 3)}s ${i * 0.4}s ease-in-out infinite`,
+            width: "8px",
+            height: "8px",
+            animation: `star-pulse-1 ${3 + (i % 3)}s ${i * 0.4}s ease-in-out infinite`,
           }}
         >
-          {/* Vertical bar */}
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: 0,
-              transform: "translateX(-50%)",
-              width: "1.5px",
-              height: "100%",
-              background: "white",
-              boxShadow: "0 0 3px 1px rgba(255,255,255,0.8)",
-            }}
-          />
-          {/* Horizontal bar */}
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: 0,
-              transform: "translateY(-50%)",
-              width: "100%",
-              height: "1.5px",
-              background: "white",
-              boxShadow: "0 0 3px 1px rgba(255,255,255,0.8)",
-            }}
-          />
+          <div style={{ position: "absolute", left: "50%", top: 0, transform: "translateX(-50%)", width: "1.5px", height: "100%", background: "white", boxShadow: "0 0 3px 1px rgba(255,255,255,0.8)" }} />
+          <div style={{ position: "absolute", top: "50%", left: 0, transform: "translateY(-50%)", width: "100%", height: "1.5px", background: "white", boxShadow: "0 0 3px 1px rgba(255,255,255,0.8)" }} />
         </div>
       ))}
 
-      {/* Aurora ribbons */}
       {ribbons.map((r) => (
         <div
           key={r.id}
@@ -255,20 +199,39 @@ const AuroraBackground = () => {
             animation: r.animation,
             transformOrigin: "50% 80%",
             borderRadius: "60% 40% 70% 30% / 60% 50% 50% 40%",
-            mixBlendMode: "screen",
+            mixBlendMode: "screen", // Keeps the auroras glowing vibrantly
             willChange: "transform, opacity",
+            backfaceVisibility: "hidden",
+            WebkitFontSmoothing: "subpixel-antialiased"
           }}
         />
       ))}
 
-      {/* Overall soft vignette overlay to deepen edges */}
+      {snowHills.map((hill) => (
+        <div
+          key={`hill-${hill.id}`}
+          style={{
+            position: "absolute",
+            left: hill.left,
+            right: hill.right,
+            bottom: hill.bottom,
+            width: hill.width,
+            height: hill.height,
+            borderRadius: "50%",
+            background: hill.background,
+            boxShadow: hill.boxShadow,
+            zIndex: hill.zIndex,
+          }}
+        />
+      ))}
+
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background:
-            "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(4, 13, 34, 0.55) 100%)",
+          background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(6, 8, 24, 0.45) 100%)",
           pointerEvents: "none",
+          zIndex: 20,
         }}
       />
     </div>
@@ -276,37 +239,3 @@ const AuroraBackground = () => {
 };
 
 export default AuroraBackground;
-
-/*
- * ─── USAGE ───────────────────────────────────────────────────────────────────
- *
- * // AppWrapper.jsx
- * import React from "react";
- * import AuroraBackground from "./AuroraBackground";
- * import Talk from "./Talk";
- * import Main from "./Main";
- *
- * const AppWrapper = () => {
- *   return (
- *     <div className="relative min-h-screen w-full">
- *       {/* 🌌 Aurora background layer *\/}
- *       <AuroraBackground />
- *
- *       {/* 🧠 Main app content *\/}
- *       <div className="relative z-10 main-app-content">
- *         <Main />
- *       </div>
- *
- *       {/* 🎤 Floating voice chat *\/}
- *       <Talk />
- *     </div>
- *   );
- * };
- *
- * export default AppWrapper;
- *
- * ─── NOTE ────────────────────────────────────────────────────────────────────
- * Add  className="relative z-10"  to any content div that should sit above
- * the aurora so it renders on top.
- * ─────────────────────────────────────────────────────────────────────────────
- */
