@@ -1,18 +1,78 @@
 import React, { useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 
-const predefinedTeachers = ["Renz", "Eunice", "Keily", "Sean Tio", "Drei", "Vince", "Vaughn",  "Aaliyah", "Angelica", "Bel Tio", "Bernadette", "Calvin", "CJ", "Christine", "Cloe Nicole", "Earl", "Elen", "Hanny", "Io Bell", "Jane", "Kisha", "Leonor", "Marjorie", "Mary Joy", "Maybell", "Princess", "RJ", "Robelyn", "Sarah", "Sean Samaniego", "Shane", "Sheryl", "Alebert", "Aneah", "Arlyanna", "Cesar", "Jensine", "Tom", "Joan", "Jhun", "Kay", "Maureen", "Mellissa", "Ralph", "Iris" , "Michael", "Mark", "Josh","Doris","Pastor Hurst", "Maam Ivy", "Andrea", "Erich"];
-
+const predefinedTeachers = [
+  "Aaliyah",
+  "Aeyisha",
+  "Alebert",
+  "Andrea",
+  "Aneah",
+  "Angelica",
+  "Arlyanna",
+  "Bel",
+  "Bernadette",
+  "Calvin",
+  "Cesar",
+  "Christine",
+  "CJ",
+  "Diane",
+  "Doris",
+  "Drei",
+  "Earl",
+  "Elen",
+  "Erich",
+  "Eunice",
+  "Hanny",
+  "Io Bell",
+  "Iris",
+  "Irish",
+  "Jane",
+  "Jel",
+  "Jenifer",
+  "Jhun",
+  "Joan",
+  "Josh",
+  "Kay",
+  "Keily",
+  "Kisha",
+  "Leonor",
+  "Lovely",
+  "Maam Ivy",
+  "Marjorie",
+  "Mark",
+  "Mary",
+  "Mary Joy",
+  "Maureen",
+  "Maybell",
+  "Mellissa",
+  "Michael",
+  "Ofelia",
+  "Pastor Hurst",
+  "Princess",
+  "Ralph",
+  "Renz",
+  "RJ",
+  "Robelyn",
+  "Sarah",
+  "Sean",
+  "Sean Samaniego",
+  "Sean Tio",
+  "Shane",
+  "Sheryl",
+  "Vaughn",
+  "Vince",
+];
 function TeacherCombobox({ invitedBy, handleInputChange, config }) {
   const [query, setQuery] = useState("");
 
-  const filteredTeachers = query === ""
-    ? predefinedTeachers
-    : predefinedTeachers.filter(teacher =>
-        teacher.toLowerCase().includes(query.toLowerCase())
-      );
+  const filteredTeachers =
+    query === ""
+      ? predefinedTeachers
+      : predefinedTeachers.filter((teacher) =>
+          teacher.toLowerCase().includes(query.toLowerCase())
+        );
 
-  const handleTeacherChange = teacher => {
+  const handleTeacherChange = (teacher) => {
     handleInputChange({ target: { value: teacher } }, "invitedBy");
   };
 
@@ -21,8 +81,8 @@ function TeacherCombobox({ invitedBy, handleInputChange, config }) {
       <div className="relative">
         <Combobox.Input
           className={`border border-gray-300 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-${config.color}`}
-          onChange={e => setQuery(e.target.value)}
-          displayValue={teacher => teacher}
+          onChange={(e) => setQuery(e.target.value)}
+          displayValue={(teacher) => teacher}
           placeholder="Select a Member"
         />
         <Transition
@@ -31,7 +91,7 @@ function TeacherCombobox({ invitedBy, handleInputChange, config }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0">
           <Combobox.Options className="absolute z-50 mt-1 max-h-60 w-full overflow-auto bg-white rounded-md py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {filteredTeachers.map(teacher => (
+            {filteredTeachers.map((teacher) => (
               <Combobox.Option
                 key={teacher}
                 value={teacher}
@@ -80,54 +140,6 @@ function TeacherCombobox({ invitedBy, handleInputChange, config }) {
 }
 
 export default TeacherCombobox;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, { useState } from "react";
 // import { Combobox, Transition } from "@headlessui/react";
